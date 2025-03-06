@@ -1,0 +1,121 @@
+name: podpole
+description: "A new Flutter project."
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.6 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  slide_to_act: ^2.0.1
+
+  shared_preferences: ^2.2.0
+
+  google_sign_in: ^6.2.2
+
+  mask_text_input_formatter: ^2.9.0
+  get_storage: ^2.1.1
+  giphy_picker: ^3.0.1
+
+  flutter_map: ^6.0.0
+  latlong2: ^0.9.0
+  location: ^5.0.3
+  geolocator: ^10.1.0
+  image_picker: ^0.8.5+3
+  image: ^4.1.3
+
+  pinput: ^5.0.1
+  crystal_navigation_bar: ^1.0.2
+  flutter_svg: ^2.0.17
+  navbar_router: ^0.7.6
+
+  provider: ^6.1.2
+  uuid: ^3.0.7
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  supabase_flutter: ^2.8.3
+
+
+dev_dependencies:
+  flutter_launcher_icons: ^0.13.1
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+  hive_generator: ^2.0.0
+  build_runner: ^2.1.0
+
+topics:
+  - dialog
+  - giffy-dialog
+  - rive-dialog
+  - lottie-dialog
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icons/logo_a.webp"
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/
+    - assets/icons/
+    - assets/icons/map.svg
+    - assets/icons/story.svg
+    - assets/icons/sms.svg
+    - assets/icons/user.svg
+    - assets/icons/mylocation.svg
+    - assets/icons/location.svg
+    - assets/icons/global.svg
+    - assets/icons/search.svg
+    - assets/icons/key.svg
+    - assets/icons/sms_l.svg
+    - assets/icons/notification.svg
+    - assets/icons/add.svg
+    - assets/icons/clock.svg
+    - assets/icons/location_p.svg
+    - assets/icons/close_circle.svg
+    - assets/icons/calendar.svg
+    - assets/images/party.png
+    - assets/fonts/s_b.ttf
+    - assets/fonts/s_black.ttf
+    - assets/fonts/s_l.ttf
+    - assets/fonts/s_m.ttf
+    - assets/fonts/s_r.ttf
+    - assets/fonts/s_t.ttf
+    - assets/fonts/u_b.ttf
+    - assets/fonts/u_l.ttf
+    - assets/fonts/u_m.ttf
+    - assets/fonts/u_r.ttf
+    - lib/images/logo_pod.png
+    - lib/images/
+    - assets/images/э.png
+    - assets/gif/
+    - assets/images/onboarding.jpg
+
+
+  fonts:
+    - family: Styrene
+      fonts:
+        - asset: assets/fonts/s_b.ttf
+        - asset: assets/fonts/s_black.ttf
+        - asset: assets/fonts/s_l.ttf
+        - asset: assets/fonts/s_m.ttf
+        - asset: assets/fonts/s_r.ttf
+        - asset: assets/fonts/s_t.ttf
+
+    - family: Unbounded
+      fonts:
+        - asset: assets/fonts/u_b.ttf
+        - asset: assets/fonts/u_l.ttf
+        - asset: assets/fonts/u_m.ttf
+        - asset: assets/fonts/u_r.ttf
