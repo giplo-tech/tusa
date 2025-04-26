@@ -22,6 +22,12 @@ class _MyBottomNavBarState extends State<MyBottomNavBar> {
     ProfilePage(),
   ];
 
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +58,7 @@ class _MyBottomNavBarState extends State<MyBottomNavBar> {
                 children: [
                   _buildNavItem('assets/icons/map.svg', 0),
                   _buildNavItem('assets/icons/story.svg', 1),
-                  _buildNavItem('assets/icons/chat.svg', 2),
+                  _buildNavItem('assets/icons/sms.svg', 2),
                   _buildNavItem('assets/icons/user.svg', 3),
                 ],
               ),

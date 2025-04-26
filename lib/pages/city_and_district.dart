@@ -1,103 +1,162 @@
 import 'package:flutter/material.dart';
-import 'package:podpole/bottom_navigation_bar/bottom_nav_bar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:podpole/bottom_navigation_bar/bottom_nav_bar.dart';
 
-class CityAndDistrictPage extends StatefulWidget {
+import '../data/location_data.dart';
+
+class LocationSelectionPage extends StatefulWidget {
+  final String userId;
+  const LocationSelectionPage({required this.userId, super.key});
+
   @override
-  _CityAndDistrictPageState createState() => _CityAndDistrictPageState();
+  State<LocationSelectionPage> createState() => _LocationSelectionPageState();
 }
 
-class _CityAndDistrictPageState extends State<CityAndDistrictPage> {
-  final TextEditingController _cityController = TextEditingController();
-  final TextEditingController _districtController = TextEditingController();
+class _LocationSelectionPageState extends State<LocationSelectionPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _supabase = Supabase.instance.client;
   bool _isLoading = false;
 
-  // Метод для сохранения города и района в Supabase
-  Future<void> _saveCityAndDistrict() async {
-    final city = _cityController.text.trim();
-    final district = _districtController.text.trim();
+  String? _selectedCity;
+  String? _selectedDistrict;
+  String? _selectedMetro;
 
-    if (city.isEmpty || district.isEmpty) {
-      print("Город или район не введены");
-      return;
-    }
+  Future<void> _saveLocation() async {
+    if (!_formKey.currentState!.validate()) return;
 
-    setState(() {
-      _isLoading = true;
-    });
-
-    final user = Supabase.instance.client.auth.currentUser;
-    if (user == null) {
-      print("Ошибка: пользователь не авторизован");
-      return;
-    }
-
-    final userId = user.id;
+    setState(() => _isLoading = true);
 
     try {
-      // Сохранение города и района в таблице Supabase
-      final response = await Supabase.instance.client.from('user_profiles').upsert({
-        'id': userId,
-        'city': city,
-        'district': district,
-      }).select().single();
+      // Сначала получаем текущий username
+      final currentData = await _supabase
+          .from('user_info')
+          .select('username')
+          .eq('id', widget.userId)
+          .single();
 
-      if (response.error != null) {
-        print("Ошибка при сохранении данных: ${response.error!.message}");
-      } else {
-        print("Город и район успешно сохранены");
+      final updates = {
+        'id': widget.userId,
+        'username': currentData['username'], // Добавляем существующий username
+        'city': _selectedCity,
+        'district': _selectedDistrict,
+        'metro_station': _selectedMetro,
+        'updated_at': DateTime.now().toUtc().toIso8601String(),
+      };
 
-        // Переход на страницу профиля
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => MyBottomNavBar()),
-        );
-      }
+      final response = await _supabase
+          .from('user_info')
+          .upsert(updates)
+          .select()
+          .single();
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => MyBottomNavBar()),
+            (route) => false,
+      );
     } catch (e) {
-      print("Ошибка: $e");
+      // Обработка ошибок
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Выберите Город и Район")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              controller: _cityController,
-              decoration: InputDecoration(
-                labelText: 'Город',
-                border: OutlineInputBorder(),
+      appBar: AppBar(title: const Text('Шаг 2: Местоположение')),
+      body: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: ListView(
+            children: [
+              const SizedBox(height: 20),
+              const Text(
+                'Укажите ваше местоположение',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
               ),
-            ),
-            SizedBox(height: 20),
-            TextField(
-              controller: _districtController,
-              decoration: InputDecoration(
-                labelText: 'Район',
-                border: OutlineInputBorder(),
+              const SizedBox(height: 30),
+
+              // Выбор города
+              DropdownButtonFormField<String>(
+                value: _selectedCity,
+                decoration: const InputDecoration(
+                  labelText: 'Город*',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.location_city),
+                ),
+                items: cities.map((city) => DropdownMenuItem(
+                  value: city,
+                  child: Text(city),
+                )).toList(),
+                onChanged: (city) => setState(() {
+                  _selectedCity = city;
+                  _selectedDistrict = null;
+                  _selectedMetro = null;
+                }),
+                validator: (value) => value == null ? 'Выберите город' : null,
               ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _isLoading ? null : _saveCityAndDistrict,
-              child: _isLoading ? CircularProgressIndicator() : Text('Сохранить'),
-            ),
-          ],
+
+              const SizedBox(height: 20),
+
+              // Выбор района
+              if (_selectedCity != null && districtsByCity.containsKey(_selectedCity))
+                DropdownButtonFormField<String>(
+                  value: _selectedDistrict,
+                  decoration: const InputDecoration(
+                    labelText: 'Район',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.map),
+                  ),
+                  items: districtsByCity[_selectedCity]!.map((district) => DropdownMenuItem(
+                    value: district,
+                    child: Text(district),
+                  )).toList(),
+                  onChanged: (district) => setState(() => _selectedDistrict = district),
+                ),
+
+              const SizedBox(height: 20),
+
+              // Выбор метро
+              if (_selectedCity != null && metroByCity.containsKey(_selectedCity))
+                DropdownButtonFormField<String>(
+                  value: _selectedMetro,
+                  decoration: const InputDecoration(
+                    labelText: 'Станция метро',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.directions_subway),
+                  ),
+                  items: metroByCity[_selectedCity]!.map((metro) => DropdownMenuItem(
+                    value: metro,
+                    child: Text(metro),
+                  )).toList(),
+                  onChanged: (metro) => setState(() => _selectedMetro = metro),
+                ),
+
+              const SizedBox(height: 30),
+
+              // Кнопка сохранения
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: _isLoading ? null : _saveLocation,
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: _isLoading
+                      ? const CircularProgressIndicator()
+                      : const Text('Сохранить и продолжить'),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-}
-
-extension on PostgrestMap {
-  get error => null;
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:podpole/auth/auth_gate.dart';
 import 'package:podpole/color.dart';
 import 'package:podpole/pages/splash_screen.dart';
@@ -12,6 +13,10 @@ void main() async {
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzdXRkdWtvbGZianJrbW1ubHVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg2OTAyODIsImV4cCI6MjA1NDI2NjI4Mn0.mh9aV5H38idYZWwJfbKpDfhHdkOvzvbxM3I7HRKA-jE',
     url: 'https://bsutdukolfbjrkmmnlul.supabase.co',
   );
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(const MyApp());
 }
 

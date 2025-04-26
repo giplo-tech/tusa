@@ -23,8 +23,8 @@ class MyTextField extends StatelessWidget {
         controller: controller,
         obscureText: obscureText,
         style: const TextStyle(
-          fontFamily: "Styrene",
-          fontSize: 16,
+          fontFamily: "Unbounded",
+          fontSize: 12,
           color: AppColors.white,
           fontWeight: FontWeight.w400,
         ),
@@ -33,8 +33,8 @@ class MyTextField extends StatelessWidget {
           fillColor: AppColors.black_l,
           hintText: hintText,
           hintStyle: const TextStyle(
-            fontFamily: "Styrene",
-            fontSize: 14,
+            fontFamily: "Unbounded",
+            fontSize: 12,
             color: AppColors.grey,
             fontWeight: FontWeight.w300,
           ),

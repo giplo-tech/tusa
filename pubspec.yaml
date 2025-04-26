@@ -41,6 +41,8 @@ dependencies:
   hive_flutter: ^1.1.0
   supabase_flutter: ^2.8.3
 
+  google_maps_flutter: ^2.5.0
+
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
@@ -85,6 +87,9 @@ flutter:
     - assets/icons/location_p.svg
     - assets/icons/close_circle.svg
     - assets/icons/calendar.svg
+    - assets/icons/logo_aaa.svg
+    - assets/icons/edit.svg
+    - assets/icons/people.svg
     - assets/images/party.png
     - assets/fonts/s_b.ttf
     - assets/fonts/s_black.ttf
